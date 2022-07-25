@@ -1,32 +1,29 @@
-use std::io::{stdin, Read};
+use std::{
+    collections::HashMap,
+    io::{stdin, BufRead},
+};
 
 fn main() {
-    let mut input = String::new();
-    stdin()
-        .read_to_string(&mut input)
-        .expect("Lecture de stdin");
-    input.lines().skip(1).for_each(|e| {
-        let mut words = e.split_whitespace().map(|e| e.parse::<u64>().expect("u64"));
-        let a =
-            (words.next().unwrap()..=words.next().unwrap()).fold(0, |e, f| e + sum_of_digits(f));
-        println!("{}", a);
+    let mut map: HashMap<String, i64> = HashMap::new();
+    stdin().lock().lines().skip(1).for_each(|e| {
+        let str = e.unwrap();
+        let mut words = str
+            .split_whitespace()
+            .map(|e| e.parse::<u64>().expect("u64"));
+        let i = words.next().unwrap();
+        let end = words.next().unwrap();
+        let sum : i64 = (i..end+1)
+            .map(|e| format!("{}", e))
+            .map(|e| {
+                if !map.contains_key(&e) {
+                    map.insert(
+                        e.clone(),
+                        e.clone().chars().fold(0, |acc, e| acc + e.to_digit(10).unwrap()) as i64,
+                    );
+                }
+                return *map.get_mut(&e.clone()).unwrap();
+            })
+            .sum();
+        println!("{}", sum);
     });
-}
-
-struct DigitIter(u64);
-
-impl Iterator for DigitIter {
-    type Item = u64;
-    fn next(&mut self) -> Option<Self::Item> {
-        if self.0 == 0 {
-            return None;
-        }
-        let ret = self.0 % 10;
-        self.0 = self.0 / 10;
-        Some(ret)
-    }
-}
-
-fn sum_of_digits(entier: u64) -> u64 {
-    return DigitIter(entier).sum::<u64>();
 }
