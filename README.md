@@ -2,5 +2,5 @@
 
 This repository contains the solutions to all problems I solved on [kattis](https://open.kattis.com/).
 
-## Contributeur :
+## Contributor :
 - https://github.com/Duffscs
